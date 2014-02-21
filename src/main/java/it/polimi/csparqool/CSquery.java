@@ -117,9 +117,9 @@ public class CSquery {
 		}
 
 		if (select != null) {
-			query += "{ " + select.toString() + " }";
+			query += "WHERE { { " + select.toString() + " } } ";
 		} else if (graph != null) {
-			query += "{ " + graph.toString() + "} ";
+			query += "WHERE { { " + graph.toString() + "} } ";
 		}
 
 		return query;

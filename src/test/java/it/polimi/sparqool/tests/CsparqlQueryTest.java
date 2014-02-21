@@ -23,10 +23,6 @@ import it.polimi.csparqool.graph;
 import it.polimi.csparqool.select;
 import it.polimi.modaclouds.monitoring.commons.vocabulary.MC;
 
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.Lexer;
-import org.antlr.runtime.RecognitionException;
 import org.apache.commons.lang.WordUtils;
 import org.junit.Test;
 
@@ -34,18 +30,19 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import com.hp.hpl.jena.vocabulary.XSD;
 
-import eu.larkc.csparql.core.parser.CSparqlLexer;
-import eu.larkc.csparql.core.parser.CSparqlParser;
+import eu.larkc.csparql.core.parser.CSparqlTranslator;
+import eu.larkc.csparql.core.parser.Translator;
+import eu.larkc.csparql.core.streams.formats.TranslationException;
 
 public class CsparqlQueryTest {
 
 	@Test
 	public void test() {
-		String timeWindow = "60";
-		String timeStep = "60";
+		String timeWindow = "60s";
+		String timeStep = "60s";
 		String kbURI = "http://localhost:8175";
 		CSquery query = CSquery.createDefaultQuery("CPU Utilization Rule");
-		String streamURI = MC.getURI() + "/streams/cpu_utilization";
+		String streamURI = MC.getURI() + "streams/cpu_utilization";
 
 		try {
 			query.setNsPrefix("xsd", XSD.getURI())
@@ -78,18 +75,15 @@ public class CsparqlQueryTest {
 			fail();
 		}
 		try {
-			ANTLRStringStream input = new ANTLRStringStream(query.toString());
-			System.out.println("1");
-			Lexer lexer = new CSparqlLexer(input);
-			System.out.println("2");
-			CommonTokenStream tokens = new CommonTokenStream(lexer);
-			System.out.println("3");
-			CSparqlParser parser = new CSparqlParser(tokens);
-			System.out.println("4");
-			parser.expression();
-		} catch (RecognitionException e) {
+			Translator t = new CSparqlTranslator();
+			t.translate(query.toString());
+		} catch (TranslationException e) {
 			e.printStackTrace();
 			fail();
+		} catch (Exception e) {
+			System.err
+					.println("Parsing was successful, the following exception was raised after parsing: "
+							+ e.getClass().getName());
 		}
 	}
 }

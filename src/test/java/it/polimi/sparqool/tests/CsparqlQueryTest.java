@@ -1,6 +1,6 @@
 /**
  * Copyright 2014 deib-polimi
- * Contact: Marco Miglierina <marco.miglierina@polimi.it>
+ * Contact: deib-polimi <marco.miglierina@polimi.it>
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import it.polimi.csparqool.Aggregation;
 import it.polimi.csparqool.CSquery;
 import it.polimi.csparqool.graph;
 import it.polimi.csparqool.select;
-import it.polimi.modaclouds.monitoring.commons.vocabulary.MC;
 
 import org.apache.commons.lang.WordUtils;
 import org.junit.Test;
@@ -29,10 +28,6 @@ import org.junit.Test;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import com.hp.hpl.jena.vocabulary.XSD;
-
-import eu.larkc.csparql.core.parser.CSparqlTranslator;
-import eu.larkc.csparql.core.parser.Translator;
-import eu.larkc.csparql.core.streams.formats.TranslationException;
 
 public class CsparqlQueryTest {
 
@@ -42,30 +37,30 @@ public class CsparqlQueryTest {
 		String timeStep = "60s";
 		String kbURI = "http://localhost:8175";
 		CSquery query = CSquery.createDefaultQuery("CPU Utilization Rule");
-		String streamURI = MC.getURI() + "streams/cpu_utilization";
+		String streamURI = "http://ex.org/streams/cpu_utilization";
 
 		try {
 			query.setNsPrefix("xsd", XSD.getURI())
 					.setNsPrefix("rdf", RDF.getURI())
 					.setNsPrefix("rdfs", RDFS.getURI())
-					.setNsPrefix("mc", MC.getURI())
+					.setNsPrefix("mc", "http://ex.org/")
 					.construct(
 							graph.add(CSquery.BLANK_NODE, RDF.type.toString(),
-									MC.Violation.toString()))
+									"mc:Violation"))
 					.fromStream(streamURI, timeWindow, timeStep)
 					.from(kbURI)
 					.where(select
 							.add("?avgCpu", "?cpuValue", Aggregation.AVERAGE)
 							.where(graph
-									.add("?datum", MC.hasMetric.toString(),
+									.add("?datum", "mc:hasMetric",
 											"mc:cpu_utilization")
-									.add(MC.hasValue.toString(), "?cpuValue")
-									.add(MC.isAbout.toString(), "?resource")
-									.add("?resouce", MC.isIn.toString(),
+									.add("mc:hasValue", "?cpuValue")
+									.add("mc:isAbout", "?resource")
+									.add("?resouce", "mc:isIn",
 											"?region")
 									.add(RDF.type.toString(), "mc:tr_1")
 									.add("?region", RDF.type.toString(),
-											MC.Region.toString()))
+											"mc:Region"))
 							.groupby("?region")
 							.having("?avgCpu >= \"0.6\"^^xsd:double"));
 			System.out.println(WordUtils.wrap(query.toString(), 100));
@@ -74,16 +69,17 @@ public class CsparqlQueryTest {
 			e.printStackTrace();
 			fail();
 		}
-		try {
-			Translator t = new CSparqlTranslator();
-			t.translate(query.toString());
-		} catch (TranslationException e) {
-			e.printStackTrace();
-			fail();
-		} catch (Exception e) {
-			System.err
-					.println("Parsing was successful, the following exception was raised after parsing: "
-							+ e.getClass().getName());
-		}
+		//VALIDATE QUERY
+//		try {
+//			Translator t = new CSparqlTranslator();
+//			t.translate(query.toString());
+//		} catch (TranslationException e) {
+//			e.printStackTrace();
+//			fail();
+//		} catch (Exception e) {
+//			System.err
+//					.println("Parsing was successful, the following exception was raised after parsing: "
+//							+ e.getClass().getName());
+//		}
 	}
 }

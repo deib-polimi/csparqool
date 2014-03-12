@@ -1,6 +1,6 @@
 /**
  * Copyright 2014 deib-polimi
- * Contact: Marco Miglierina <marco.miglierina@polimi.it>
+ * Contact: deib-polimi <marco.miglierina@polimi.it>
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.

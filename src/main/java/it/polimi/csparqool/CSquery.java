@@ -1,6 +1,6 @@
 /**
  * Copyright 2014 deib-polimi
- * Contact: Marco Miglierina <marco.miglierina@polimi.it>
+ * Contact: deib-polimi <marco.miglierina@polimi.it>
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ public class CSquery {
 
 	private String queryName;
 	private Map<String, String> nameSpaces;
-	private _graph constructGraph;
+	private List<_graph> constructGraphs;
 	private List<Stream> streams;
 	private List<String> dataSets;
 	private _select select;
@@ -58,12 +58,10 @@ public class CSquery {
 		return this;
 	}
 
-	public CSquery construct(_graph constructGraph)
-			throws MalformedQueryException {
-		if (this.constructGraph != null)
-			throw new MalformedQueryException(
-					"Only one construct graph is allowed");
-		this.constructGraph = constructGraph;
+	public CSquery construct(_graph constructGraph) {
+		if (this.constructGraphs == null)
+			constructGraphs = new ArrayList<_graph>();
+		constructGraphs.add(constructGraph);
 		return this;
 	}
 
@@ -90,7 +88,7 @@ public class CSquery {
 	@Override
 	public String toString() {
 		String query = "";
-		query += "REGISTER STREAM " + removeSpaces(queryName) + " AS ";
+		query += "REGISTER STREAM " + escapeName(queryName) + " AS ";
 
 		if (!nameSpaces.isEmpty()) {
 			for (String uri : nameSpaces.keySet()) {
@@ -98,8 +96,12 @@ public class CSquery {
 			}
 		}
 
-		if (constructGraph != null) {
-			query += "CONSTRUCT { " + constructGraph.toString() + "} ";
+		if (constructGraphs != null && ! constructGraphs.isEmpty()) {
+			query += "CONSTRUCT { ";
+			for (_graph constructGraph: constructGraphs) {
+				query += constructGraph.toString();
+			}
+			query += "} ";
 		}
 
 		if (!streams.isEmpty()) {
@@ -126,18 +128,10 @@ public class CSquery {
 	}
 
 
-	private String removeSpaces(String string) {
-		string = StringUtils.replaceEach(string, new String[] { " " },
+	private String escapeName(String name) {
+		name = StringUtils.replaceEach(name, new String[] { " " },
 				new String[] { "_" });
-		return string;
+		return name;
 	}
 
-	public static boolean isWellFormedVariableName(String varname) {
-		return varname
-				.matches("\\?[A-Za-z_0-9]+"); //pattern here is more strict then real grammar
-	}
-
-	public static void main(String[] args) {
-		System.out.println(isWellFormedVariableName("?var_prova"));
-	}
 }

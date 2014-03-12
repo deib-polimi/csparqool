@@ -1,6 +1,6 @@
 /**
  * Copyright 2014 deib-polimi
- * Contact: Marco Miglierina <marco.miglierina@polimi.it>
+ * Contact: deib-polimi <marco.miglierina@polimi.it>
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -16,10 +16,23 @@
  */
 package it.polimi.csparqool;
 
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.Resource;
+
 
 public class graph {
 
 	public static _graph add(String subject, String predicate, String object) {
 		return new _graph().add(subject, predicate, object);
+	}
+
+	public static _graph add(String subject, Property predicate,
+			Resource object) {
+		return add(subject, predicate.toString(), object.toString());
+	}
+
+	public static _graph add(String subject, Property predicate,
+			String object) {
+		return add(subject, predicate.toString(), object);
 	}
 }

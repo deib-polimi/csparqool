@@ -1,6 +1,6 @@
 /**
  * Copyright 2014 deib-polimi
- * Contact: Marco Miglierina <marco.miglierina@polimi.it>
+ * Contact: deib-polimi <marco.miglierina@polimi.it>
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -29,17 +29,17 @@ public class _select {
 
 	public _select add(String outputName, String inputName, String aggregation)
 			throws MalformedQueryException {
-		if (!CSquery.isWellFormedVariableName(inputName))
+		if (!Validator.checkVariable(inputName))
 			throw new MalformedQueryException("Input variable name '"
 					+ inputName + "' is not well formed");
-		if (!CSquery.isWellFormedVariableName(outputName))
+		if (!Validator.checkVariable(outputName))
 			throw new MalformedQueryException("Output variable name '"
 					+ outputName + "' is not well formed");
 
 		String selectItem = "(";
 
 		switch (aggregation) {
-		case CSquery.AVERAGE:
+		case Aggregation.AVERAGE:
 			selectItem += "AVG";
 			break;
 		default:
@@ -54,7 +54,7 @@ public class _select {
 	}
 
 	public _select add(String varName) throws MalformedQueryException {
-		if (!CSquery.isWellFormedVariableName(varName))
+		if (!Validator.checkVariable(varName))
 			throw new MalformedQueryException("Variable name '" + varName
 					+ "' is not well formed");
 		selectItems.add(varName);

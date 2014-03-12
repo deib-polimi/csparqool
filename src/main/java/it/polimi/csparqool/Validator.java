@@ -16,10 +16,11 @@
  */
 package it.polimi.csparqool;
 
-public class select {
+public class Validator {
 
-	public static _select add(String outputName, String inputName, String computation) throws MalformedQueryException {
-		return new _select().add(outputName, inputName, computation);
+	public static boolean checkVariable(String varname) {
+		return varname
+				.matches("\\?[A-Za-z_0-9]+"); //pattern here is more strict then real grammar
 	}
 
 }

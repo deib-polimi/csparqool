@@ -1,6 +1,6 @@
 /**
  * Copyright 2014 deib-polimi
- * Contact: Marco Miglierina <marco.miglierina@polimi.it>
+ * Contact: deib-polimi <marco.miglierina@polimi.it>
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ package it.polimi.csparqool;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.hp.hpl.jena.rdf.model.Property;
+
 
 public class _graph {
 
@@ -31,10 +33,12 @@ public class _graph {
 	}
 	
 	public _graph add(String predicate, String object) {
-		triples.add(new Triple(triples.get(triples.size()-1).getSubject(), predicate, object));
-		return this;
+		return add(triples.get(triples.size()-1).getSubject(), predicate, object);
 	}
 
+	public _graph add(Property predicate, String object) {
+		return add(predicate.toString(), object);
+	}
 	
 	
 	@Override
@@ -54,5 +58,7 @@ public class _graph {
 	private boolean isIriRef(String term) {
 		return term.contains("/");
 	}
+
+	
 
 }

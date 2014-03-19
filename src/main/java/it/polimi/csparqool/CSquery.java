@@ -20,17 +20,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
+import java.util.UUID;
 
 public class CSquery {
 	
 	// sparql grammar: http://www.w3.org/TR/2013/REC-sparql11-query-20130321
 
 	public static final String BLANK_NODE = "[]";
-	public static final String AVERAGE = "AVERAGE";
 
-	private String queryName;
+	private String name;
 	private Map<String, String> nameSpaces;
 	private List<_graph> constructGraphs;
 	private List<Stream> streams;
@@ -38,16 +36,20 @@ public class CSquery {
 	private _select select;
 	private _graph graph;
 
-	public static CSquery createDefaultQuery(String queryName) {
+	/**
+	 * Query name must contain only numbers and letters
+	 * 
+	 * @param queryName
+	 * @return
+	 * @throws MalformedQueryException
+	 */
+	public static CSquery createDefaultQuery(String queryName) throws MalformedQueryException {
 		return new CSquery(queryName);
 	}
 
-
-	private CSquery() {
-	}
-
-	private CSquery(String queryName) {
-		this.queryName = queryName;
+	private CSquery(String queryName) throws MalformedQueryException {
+		validateName(queryName);
+		this.name = queryName;
 		nameSpaces = new HashMap<String, String>();
 		streams = new ArrayList<Stream>();
 		dataSets = new ArrayList<String>();
@@ -84,11 +86,10 @@ public class CSquery {
 		this.graph = graph;
 		return this;
 	}
-
-	@Override
-	public String toString() {
+	
+	public String getCSPARQL() throws MalformedQueryException {
 		String query = "";
-		query += "REGISTER STREAM " + escapeName(queryName) + " AS ";
+		query += "REGISTER STREAM " + name + " AS ";
 
 		if (!nameSpaces.isEmpty()) {
 			for (String uri : nameSpaces.keySet()) {
@@ -99,7 +100,7 @@ public class CSquery {
 		if (constructGraphs != null && ! constructGraphs.isEmpty()) {
 			query += "CONSTRUCT { ";
 			for (_graph constructGraph: constructGraphs) {
-				query += constructGraph.toString();
+				query += constructGraph.getCSPARQL();
 			}
 			query += "} ";
 		}
@@ -119,19 +120,30 @@ public class CSquery {
 		}
 
 		if (select != null) {
-			query += "WHERE { { " + select.toString() + " } } ";
+			query += "WHERE { { " + select.getCSPARQL() + " } } ";
 		} else if (graph != null) {
-			query += "WHERE { { " + graph.toString() + "} } ";
+			query += "WHERE { { " + graph.getCSPARQL() + "} } ";
 		}
 
 		return query;
 	}
 
 
-	private String escapeName(String name) {
-		name = StringUtils.replaceEach(name, new String[] { " " },
-				new String[] { "_" });
-		return name;
+	public static void validateName(String name) throws MalformedQueryException {
+		if (!name.matches("[a-zA-Z0-9]+")) throw new MalformedQueryException("Query name must contain only letters and numbers");
+	}
+
+
+	public String getName() {
+		return this.name;
+	}
+
+	public static String escapeName(String name) {
+		return name.replaceAll("[^a-zA-Z0-9]", "");
+	}
+
+	public static String generateRandomName() {
+		return escapeName(UUID.randomUUID().toString());
 	}
 
 }

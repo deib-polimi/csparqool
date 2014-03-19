@@ -72,35 +72,42 @@ public class _select {
 	}
 
 	public _select where(_select select) throws MalformedQueryException {
-		if (graph != null) throw new MalformedQueryException("Only either select or graph can be inside a where clause");
+		if (graph != null)
+			throw new MalformedQueryException(
+					"Only either select or graph can be inside a where clause");
 		this.select = select;
 		return this;
 	}
 
 	public _select where(_graph graph) throws MalformedQueryException {
-		if (select != null) throw new MalformedQueryException("Only either select or graph can be inside a where clause");
+		if (select != null)
+			throw new MalformedQueryException(
+					"Only either select or graph can be inside a where clause");
 		this.graph = graph;
 		return this;
 	}
 
-	@Override
-	public String toString() {
+	public String getCSPARQL() throws MalformedQueryException {
 		String selectString = "";
 
-			selectString += "SELECT ";
-			for (String selectItem : selectItems) {
-				selectString += selectItem + " ";
-			}
+		selectString += "SELECT ";
+		for (String selectItem : selectItems) {
+			selectString += selectItem + " ";
+		}
+		
+		if (select == null && graph==null) throw new MalformedQueryException("Body of WHERE is missing");
 
-			selectString += "WHERE { " + (select != null ? select.toString() : graph.toString() ) + "} ";
+		selectString += "WHERE { "
+				+ (select != null ? select.getCSPARQL() : graph.getCSPARQL())
+				+ "} ";
 
-			if (groupByVar != null) {
-				selectString += "GROUP BY " + groupByVar + " ";
-			}
+		if (groupByVar != null) {
+			selectString += "GROUP BY " + groupByVar + " ";
+		}
 
-			if (condition != null) {
-				selectString += "HAVING (" + condition + ") ";
-			}
+		if (condition != null) {
+			selectString += "HAVING (" + condition + ") ";
+		}
 
 		return selectString;
 	}

@@ -20,45 +20,69 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.hp.hpl.jena.rdf.model.Property;
-
+import com.hp.hpl.jena.rdf.model.Resource;
 
 public class _graph {
 
-	private List<Triple> triples = new ArrayList<Triple>();
-	
+	private List<GraphItem> graphItems = new ArrayList<GraphItem>();
 
 	public _graph add(String subject, String predicate, String object) {
-		triples.add(new Triple(subject, predicate, object));
+		graphItems.add(new Triple(subject, predicate, object));
 		return this;
 	}
-	
+
+	public _graph addTransitive(String subject, String predicate, String object) {
+		Triple transitiveTriple = new Triple(subject, predicate, object);
+		transitiveTriple.setTransitive(true);
+		graphItems.add(transitiveTriple);
+		return this;
+	}
+
+	public _graph add(_union union) {
+		graphItems.add(union);
+		return this;
+	}
+
 	public _graph add(String predicate, String object) {
-		return add(triples.get(triples.size()-1).getSubject(), predicate, object);
+		return add(null, predicate, object);
 	}
 
 	public _graph add(Property predicate, String object) {
 		return add(predicate.toString(), object);
 	}
-	
-	
-	@Override
-	public String toString() {
+
+	public String getCSPARQL() throws MalformedQueryException {
 		String graph = "";
-		for (Triple t: triples) {
-			graph += escape(t.getSubject()) + " " + escape(t.getPredicate()) + " " + escape(t.getObject()) + " . ";
+		GraphItem current = null;
+		for (GraphItem next : graphItems) {
+			if (current != null) {
+				graph += current.getCSPARQL()
+						+ ((next instanceof Triple && ((Triple) next)
+								.hasSubject()) ? ". " : "; ");
+			}
+			current = next;
+		}
+		if (current != null) {
+			graph += current.getCSPARQL() + ". ";
 		}
 		return graph;
 	}
 
-	private String escape(String term) {
-		if (isIriRef(term)) return "<"+term+">";
-		return term;
+	public _graph add(String subject, Property property, String object) {
+		return add(subject, property.toString(), object);
 	}
 
-	private boolean isIriRef(String term) {
-		return term.contains("/");
+	public _graph add(String subject, Property property, Resource object) {
+		return add(subject, property.toString(), object.toString());
 	}
 
-	
+	public _graph addTransitive(String subject, Property property, String object) {
+		return addTransitive(subject, property.toString(), object);
+	}
+
+	public _graph addTransitive(String subject, Property property,
+			Resource object) {
+		return addTransitive(subject, property.toString(), object.toString());
+	}
 
 }

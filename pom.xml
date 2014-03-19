@@ -21,7 +21,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.polimi.csparqool</groupId>
 	<artifactId>csparqool</artifactId>
-	<version>0.1-SNAPSHOT</version>
+	<version>0.2</version>
 	<name>csparqool</name>
 	<description>An object oriented language for c-sparql queries</description>
 	<inceptionYear>2014</inceptionYear>
@@ -36,6 +36,8 @@
 
 	<properties>
 		<github.global.server>github</github.global.server>
+		<github.repository.name>csparqool</github.repository.name>
+		<github.user.name>deib-polimi</github.user.name>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
@@ -80,7 +82,7 @@
 			<version>4.2</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- <dependency>
+		<dependency>
 			<groupId>eu.larkc.csparql</groupId>
 			<artifactId>csparql-core</artifactId>
 			<version>0.9.3</version>
@@ -95,7 +97,7 @@
 					<groupId>log4j</groupId>
 				</exclusion>
 			</exclusions>
-		</dependency> -->
+		</dependency>
 		<dependency>
 			<groupId>com.hp.hpl.jena</groupId>
 			<artifactId>jena</artifactId>
@@ -184,7 +186,7 @@
 						${project.artifactId}:${project.version}</checkinComment>
 					<content>${project.reporting.outputDirectory}/apidocs</content>
 					<skipDeletedFiles>true</skipDeletedFiles>
-					<pubScmUrl>scm:git:git@github.com:deib-polimi/modaclouds-monitoring-rules.git</pubScmUrl>
+					<pubScmUrl>scm:git:git@github.com:${github.user.name}/${github.repository.name}.git</pubScmUrl>
 					<scmBranch>gh-pages</scmBranch> <!-- branch with static site -->
 				</configuration>
 			</plugin>

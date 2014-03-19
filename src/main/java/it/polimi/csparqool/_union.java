@@ -16,40 +16,31 @@
  */
 package it.polimi.csparqool;
 
-class Triple extends GraphItem {
+import java.util.ArrayList;
+import java.util.List;
 
-	private String subject;
-	private String predicate;
-	private String object;
-	private boolean isTransitive = false;
+public class _union extends GraphItem {
 
-	public Triple(String subject, String predicate, String object) {
-		this.subject = subject;
-		this.predicate = predicate;
-		this.object = object;
-	}
+	private List<_graph> graphs = new ArrayList<_graph>();
 
-	public void setTransitive(boolean value) {
-		this.isTransitive = value;
-	}
-
-	
-	private String escape(String term) {
-		if (isIriRef(term))
-			return "<" + term + ">";
-		return term;
-	}
-
-	private boolean isIriRef(String term) {
-		return term.contains("/");
+	public _union add(_graph graph) {
+		graphs.add(graph);
+		return this;
 	}
 
 	@Override
 	public String getCSPARQL() throws MalformedQueryException {
-		return (subject != null ? escape(subject) + " " : "") + escape(predicate) + (isTransitive ? "+ " : " ") + escape(object) + " ";
+		String union = "{ ";
+		int elements = graphs.size();
+		for (_graph g : graphs) {
+			union += "{ " + g.getCSPARQL() + "} ";
+			if (--elements > 0)
+				union += "UNION ";				
+		}
+		union += "} ";
+		return union;
 	}
 
-	public boolean hasSubject() {
-		return subject!=null;
-	}
+	
+
 }

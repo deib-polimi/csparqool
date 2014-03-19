@@ -19,6 +19,7 @@ package it.polimi.sparqool.tests;
 import static org.junit.Assert.fail;
 import it.polimi.csparqool.Aggregation;
 import it.polimi.csparqool.CSquery;
+import it.polimi.csparqool.MalformedQueryException;
 import it.polimi.csparqool.graph;
 import it.polimi.csparqool.select;
 
@@ -29,14 +30,19 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import com.hp.hpl.jena.vocabulary.XSD;
 
-public class CsparqlQueryTest {
+import eu.larkc.csparql.core.new_parser.ParseException;
+import eu.larkc.csparql.core.new_parser.utility_files.CSparqlTranslator;
+import eu.larkc.csparql.core.new_parser.utility_files.Translator;
+import eu.larkc.csparql.core.streams.formats.TranslationException;
 
+public class CsparqlQueryTest {
+	
 	@Test
-	public void test() {
+	public void test() throws MalformedQueryException {
 		String timeWindow = "60s";
 		String timeStep = "60s";
 		String kbURI = "http://localhost:8175";
-		CSquery query = CSquery.createDefaultQuery("CPU Utilization Rule");
+		CSquery query = CSquery.createDefaultQuery("CPUUtilizationRule");
 		String streamURI = "http://ex.org/streams/cpu_utilization";
 
 		try {
@@ -56,30 +62,32 @@ public class CsparqlQueryTest {
 											"mc:cpu_utilization")
 									.add("mc:hasValue", "?cpuValue")
 									.add("mc:isAbout", "?resource")
-									.add("?resouce", "mc:isIn",
-											"?region")
+									.add("?resouce", "mc:isIn", "?region")
 									.add(RDF.type.toString(), "mc:tr_1")
 									.add("?region", RDF.type.toString(),
-											"mc:Region"))
-							.groupby("?region")
+											"mc:Region")).groupby("?region")
 							.having("?avgCpu >= \"0.6\"^^xsd:double"));
-			System.out.println(WordUtils.wrap(query.toString(), 100));
-
+			System.out.println(WordUtils.wrap(query.getCSPARQL(), 100));
+			validateQuery(query.getCSPARQL());
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
 		}
-		//VALIDATE QUERY
-//		try {
-//			Translator t = new CSparqlTranslator();
-//			t.translate(query.toString());
-//		} catch (TranslationException e) {
-//			e.printStackTrace();
-//			fail();
-//		} catch (Exception e) {
-//			System.err
-//					.println("Parsing was successful, the following exception was raised after parsing: "
-//							+ e.getClass().getName());
-//		}
+	}
+
+	public static void validateQuery(String query) {
+		Translator t = new CSparqlTranslator();
+		System.out.println(WordUtils.wrap(query, 100));
+		try {
+			t.translate(query);
+		} catch (TranslationException | ParseException e) {
+			e.printStackTrace();
+			fail();
+		} catch (Exception e) {
+			System.err
+					.println("Parsing was successful, the following exception was raised after parsing: "
+							+ e.getClass().getName());
+			e.printStackTrace();
+		}
 	}
 }

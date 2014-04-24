@@ -18,8 +18,8 @@ package it.polimi.csparqool;
 
 public class select {
 
-	public static _select add(String outputName, String inputName, String computation) throws MalformedQueryException {
-		return new _select().add(outputName, inputName, computation);
+	public static _select add(String outputVar, String[] parameters, String computation) throws MalformedQueryException {
+		return new _select().add(outputVar, parameters, computation);
 	}
 
 }

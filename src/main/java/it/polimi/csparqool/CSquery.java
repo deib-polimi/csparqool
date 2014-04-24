@@ -28,13 +28,18 @@ public class CSquery {
 
 	public static final String BLANK_NODE = "[]";
 
+	private static final String functionsPrefix = "f";
+	private static final String functionsURI = "http://larkc.eu/csparql/sparql/jena/ext#";
+
 	private String name;
 	private Map<String, String> nameSpaces;
 	private List<_graph> constructGraphs;
 	private List<Stream> streams;
 	private List<String> dataSets;
-	private _select select;
+	private _select selectBody;
 	private _graph graph;
+
+	private List<String> selectItems;
 
 	/**
 	 * Query name must contain only numbers and letters
@@ -53,6 +58,7 @@ public class CSquery {
 		nameSpaces = new HashMap<String, String>();
 		streams = new ArrayList<Stream>();
 		dataSets = new ArrayList<String>();
+		selectItems = new ArrayList<String>();
 	}
 
 	public CSquery setNsPrefix(String prefix, String uri) {
@@ -78,7 +84,7 @@ public class CSquery {
 	}
 
 	public CSquery where(_select select) {
-		this.select = select;
+		this.selectBody = select;
 		return this;
 	}
 	
@@ -89,7 +95,13 @@ public class CSquery {
 	
 	public String getCSPARQL() throws MalformedQueryException {
 		String query = "";
-		query += "REGISTER STREAM " + name + " AS ";
+		
+		boolean isConstructQuery = constructGraphs != null && ! constructGraphs.isEmpty();
+		
+		if (isConstructQuery)
+			query += "REGISTER STREAM " + name + " AS ";
+		else
+			query += "REGISTER QUERY " + name + " AS ";
 
 		if (!nameSpaces.isEmpty()) {
 			for (String uri : nameSpaces.keySet()) {
@@ -97,12 +109,17 @@ public class CSquery {
 			}
 		}
 
-		if (constructGraphs != null && ! constructGraphs.isEmpty()) {
+		if (isConstructQuery) {
 			query += "CONSTRUCT { ";
 			for (_graph constructGraph: constructGraphs) {
 				query += constructGraph.getCSPARQL();
 			}
 			query += "} ";
+		} else {
+			query += "SELECT ";
+			for (String selectItem : selectItems) {
+				query += selectItem + " ";
+			}
 		}
 
 		if (!streams.isEmpty()) {
@@ -119,8 +136,8 @@ public class CSquery {
 			}
 		}
 
-		if (select != null) {
-			query += "WHERE { { " + select.getCSPARQL() + " } } ";
+		if (selectBody != null) {
+			query += "WHERE { { " + selectBody.getCSPARQL() + " } } ";
 		} else if (graph != null) {
 			query += "WHERE { { " + graph.getCSPARQL() + "} } ";
 		}
@@ -144,6 +161,18 @@ public class CSquery {
 
 	public static String generateRandomName() {
 		return escapeName(UUID.randomUUID().toString());
+	}
+
+	public void select(String var) {
+		selectItems.add(var);
+	}
+
+	public static String getFunctionsPrefix() {
+		return functionsPrefix ;
+	}
+
+	public static String getFunctionsURI() {
+		return functionsURI;
 	}
 
 }

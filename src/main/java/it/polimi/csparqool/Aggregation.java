@@ -19,5 +19,6 @@ package it.polimi.csparqool;
 public class Aggregation {
 
 	public static final String AVERAGE = "AVERAGE";
+	public static final String TIMESTAMP = "TIMESTAMP";
 
 }

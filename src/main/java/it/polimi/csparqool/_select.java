@@ -27,14 +27,12 @@ public class _select {
 	private _select select;
 	private _graph graph;
 
-	public _select add(String outputName, String inputName, String aggregation)
+	public _select add(String outputVar, String[] parameters, String aggregation)
 			throws MalformedQueryException {
-		if (!Validator.checkVariable(inputName))
-			throw new MalformedQueryException("Input variable name '"
-					+ inputName + "' is not well formed");
-		if (!Validator.checkVariable(outputName))
+		// TODO parameters should be validated based on aggregation
+		if (!Validator.checkVariable(outputVar))
 			throw new MalformedQueryException("Output variable name '"
-					+ outputName + "' is not well formed");
+					+ outputVar + "' is not well formed");
 
 		String selectItem = "(";
 
@@ -42,13 +40,20 @@ public class _select {
 		case Aggregation.AVERAGE:
 			selectItem += "AVG";
 			break;
+		case Aggregation.TIMESTAMP:
+			selectItem += "f:timestamp";
+			break;
 		default:
 			throw new MalformedQueryException(
 					"There is no current implementation of aggregation "
 							+ aggregation);
 		}
-
-		selectItem += "(" + inputName + ") AS " + outputName + ")";
+		selectItem += "( ";
+		int i;
+		for (i = 0; i<parameters.length-1; i++) {
+			selectItem += parameters[i] + ", ";
+		}
+		selectItem += parameters[i] + ") AS " + outputVar + ") ";
 		selectItems.add(selectItem);
 		return this;
 	}
@@ -90,6 +95,8 @@ public class _select {
 	public String getCSPARQL() throws MalformedQueryException {
 		String selectString = "";
 
+		if (selectItems.isEmpty()) throw new MalformedQueryException("No selection is specified");
+		
 		selectString += "SELECT ";
 		for (String selectItem : selectItems) {
 			selectString += selectItem + " ";

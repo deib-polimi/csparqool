@@ -56,7 +56,7 @@ public class CsparqlQueryTest {
 					.fromStream(streamURI, timeWindow, timeStep)
 					.from(kbURI)
 					.where(select
-							.add("?avgCpu", "?cpuValue", Aggregation.AVERAGE)
+							.add("?avgCpu", new String[]{"?cpuValue"}, Aggregation.AVERAGE)
 							.where(graph
 									.add("?datum", "mc:hasMetric",
 											"mc:cpu_utilization")

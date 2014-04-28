@@ -19,15 +19,15 @@ package it.polimi.csparqool;
 import java.util.ArrayList;
 import java.util.List;
 
-public class _select {
+public class _body {
 
 	private List<String> selectItems = new ArrayList<String>();
 	private String groupByVar;
 	private String condition;
-	private _select select;
+	private _body body;
 	private _graph graph;
 
-	public _select add(String outputVar, String[] parameters, String aggregation)
+	public _body selectFunction(String outputVar, String aggregation, String... parameters)
 			throws MalformedQueryException {
 		// TODO parameters should be validated based on aggregation
 		if (!Validator.checkVariable(outputVar))
@@ -37,20 +37,29 @@ public class _select {
 		String selectItem = "(";
 
 		switch (aggregation) {
-		case Aggregation.AVERAGE:
+		case Function.AVERAGE:
 			selectItem += "AVG";
 			break;
-		case Aggregation.TIMESTAMP:
+		case Function.TIMESTAMP:
 			selectItem += "f:timestamp";
+			break;
+		case Function.PERCENTILE:
+			selectItem += "PERCENTILE";
+			break;
+		case Function.MAX:
+			selectItem += "MAX";
+			break;
+		case Function.MIN:
+			selectItem += "MIN";
 			break;
 		default:
 			throw new MalformedQueryException(
 					"There is no current implementation of aggregation "
 							+ aggregation);
 		}
-		selectItem += "( ";
+		selectItem += "(";
 		int i;
-		for (i = 0; i<parameters.length-1; i++) {
+		for (i = 0; i < parameters.length - 1; i++) {
 			selectItem += parameters[i] + ", ";
 		}
 		selectItem += parameters[i] + ") AS " + outputVar + ") ";
@@ -58,65 +67,70 @@ public class _select {
 		return this;
 	}
 
-	public _select add(String varName) throws MalformedQueryException {
-		if (!Validator.checkVariable(varName))
-			throw new MalformedQueryException("Variable name '" + varName
-					+ "' is not well formed");
-		selectItems.add(varName);
+	public _body select(String... variables) throws MalformedQueryException {
+		for (String var : variables) {
+			if (!Validator.checkVariable(var))
+				throw new MalformedQueryException("Variable name '" + var
+						+ "' is not well formed");
+			selectItems.add(var);
+		}
 		return this;
 	}
 
-	public _select groupby(String variable) {
+	public _body groupby(String variable) {
 		this.groupByVar = variable;
 		return this;
 	}
 
-	public _select having(String condition) {
+	public _body having(String condition) {
 		this.condition = condition;
 		return this;
 	}
 
-	public _select where(_select select) throws MalformedQueryException {
+	public _body where(_body body) throws MalformedQueryException {
 		if (graph != null)
 			throw new MalformedQueryException(
-					"Only either select or graph can be inside a where clause");
-		this.select = select;
+					"Only either body or graph can be inside a where clause");
+		this.body = body;
 		return this;
 	}
 
-	public _select where(_graph graph) throws MalformedQueryException {
-		if (select != null)
+	public _body where(_graph graph) throws MalformedQueryException {
+		if (body != null)
 			throw new MalformedQueryException(
-					"Only either select or graph can be inside a where clause");
+					"Only either body or graph can be inside a where clause");
 		this.graph = graph;
 		return this;
 	}
 
 	public String getCSPARQL() throws MalformedQueryException {
-		String selectString = "";
+		String bodyString = "";
 
-		if (selectItems.isEmpty()) throw new MalformedQueryException("No selection is specified");
-		
-		selectString += "SELECT ";
+		if (selectItems.isEmpty())
+			throw new MalformedQueryException("No selection is specified");
+
+		bodyString += "SELECT ";
 		for (String selectItem : selectItems) {
-			selectString += selectItem + " ";
+			bodyString += selectItem + " ";
 		}
-		
-		if (select == null && graph==null) throw new MalformedQueryException("Body of WHERE is missing");
 
-		selectString += "WHERE { "
-				+ (select != null ? select.getCSPARQL() : graph.getCSPARQL())
+		if (body == null && graph == null)
+			throw new MalformedQueryException("Body of WHERE is missing");
+
+		bodyString += "WHERE { "
+				+ (body != null ? body.getCSPARQL() : graph.getCSPARQL())
 				+ "} ";
 
 		if (groupByVar != null) {
-			selectString += "GROUP BY " + groupByVar + " ";
+			bodyString += "GROUP BY " + groupByVar + " ";
 		}
 
 		if (condition != null) {
-			selectString += "HAVING (" + condition + ") ";
+			bodyString += "HAVING (" + condition + ") ";
 		}
 
-		return selectString;
+		return bodyString;
 	}
+
 
 }

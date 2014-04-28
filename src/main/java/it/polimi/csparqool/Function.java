@@ -16,9 +16,13 @@
  */
 package it.polimi.csparqool;
 
-public class Aggregation {
 
-	public static final String AVERAGE = "AVERAGE";
-	public static final String TIMESTAMP = "TIMESTAMP";
+public class Function {
 
+	public static final String AVERAGE = "Average";
+	public static final String TIMESTAMP = "Timestamp";
+	public static final String PERCENTILE = "Percentile";
+	public static final String MAX = "Max";
+	public static final String MIN = "Min";
+	
 }

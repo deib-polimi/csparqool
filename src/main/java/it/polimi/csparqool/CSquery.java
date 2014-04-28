@@ -36,9 +36,8 @@ public class CSquery {
 	private List<_graph> constructGraphs;
 	private List<Stream> streams;
 	private List<String> dataSets;
-	private _select selectBody;
+	private _body selectBody;
 	private _graph graph;
-
 	private List<String> selectItems;
 
 	/**
@@ -59,6 +58,7 @@ public class CSquery {
 		streams = new ArrayList<Stream>();
 		dataSets = new ArrayList<String>();
 		selectItems = new ArrayList<String>();
+		constructGraphs = new ArrayList<_graph>();
 	}
 
 	public CSquery setNsPrefix(String prefix, String uri) {
@@ -67,9 +67,13 @@ public class CSquery {
 	}
 
 	public CSquery construct(_graph constructGraph) {
-		if (this.constructGraphs == null)
-			constructGraphs = new ArrayList<_graph>();
 		constructGraphs.add(constructGraph);
+		return this;
+	}
+	
+	public CSquery select(String... variables) {
+		for (String var: variables)
+			selectItems.add(var);
 		return this;
 	}
 
@@ -83,7 +87,7 @@ public class CSquery {
 		return this;
 	}
 
-	public CSquery where(_select select) {
+	public CSquery where(_body select) {
 		this.selectBody = select;
 		return this;
 	}
@@ -163,9 +167,7 @@ public class CSquery {
 		return escapeName(UUID.randomUUID().toString());
 	}
 
-	public void select(String var) {
-		selectItems.add(var);
-	}
+	
 
 	public static String getFunctionsPrefix() {
 		return functionsPrefix ;

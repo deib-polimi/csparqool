@@ -17,11 +17,11 @@
 package it.polimi.sparqool.tests;
 
 import static org.junit.Assert.fail;
-import it.polimi.csparqool.Aggregation;
+import it.polimi.csparqool.Function;
 import it.polimi.csparqool.CSquery;
 import it.polimi.csparqool.MalformedQueryException;
 import it.polimi.csparqool.graph;
-import it.polimi.csparqool.select;
+import it.polimi.csparqool.body;
 
 import org.apache.commons.lang.WordUtils;
 import org.junit.Test;
@@ -55,8 +55,8 @@ public class CsparqlQueryTest {
 									"mc:Violation"))
 					.fromStream(streamURI, timeWindow, timeStep)
 					.from(kbURI)
-					.where(select
-							.add("?avgCpu", new String[]{"?cpuValue"}, Aggregation.AVERAGE)
+					.where(body
+							.selectFunction("?avgCpu", Function.AVERAGE, new String[]{"?cpuValue"})
 							.where(graph
 									.add("?datum", "mc:hasMetric",
 											"mc:cpu_utilization")

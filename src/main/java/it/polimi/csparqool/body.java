@@ -16,10 +16,14 @@
  */
 package it.polimi.csparqool;
 
-public class select {
+public class body {
 
-	public static _select add(String outputVar, String[] parameters, String computation) throws MalformedQueryException {
-		return new _select().add(outputVar, parameters, computation);
+	public static _body selectFunction(String outputVar, String computation, String... parameters) throws MalformedQueryException {
+		return new _body().selectFunction(outputVar, computation, parameters);
+	}
+	
+	public static _body select(String... variables) throws MalformedQueryException {
+		return new _body().select(variables);
 	}
 
 }

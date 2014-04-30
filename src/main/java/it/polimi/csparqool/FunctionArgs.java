@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FunctionParameter {
+public class FunctionArgs {
 	public static final String INPUT_VARIABLE = "inputVariable";
 	public static final String SUBJECT = "subject";
 	public static final String PREDICATE = "predicate";
@@ -39,12 +39,12 @@ public class FunctionParameter {
 	}
 
 
-	public static int getNumberOfParameters(String aggregateFunction) {
+	public static int getNumberOfArgs(String aggregateFunction) {
 		return functionsParameters.get(aggregateFunction).length;
 	}
 
 
-	public static int getParameterIdx(String aggregateFunction, String parameterName) {
+	public static int getArgIdx(String aggregateFunction, String parameterName) {
 		return Arrays.asList(functionsParameters.get(aggregateFunction)).indexOf(parameterName);
 	}
 }

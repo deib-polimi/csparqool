@@ -25,6 +25,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 public class _graph {
 
 	private List<GraphItem> graphItems = new ArrayList<GraphItem>();
+	private List<String> filters = new ArrayList<String>();
 
 	public _graph add(String subject, String predicate, String object) {
 		graphItems.add(new Triple(subject, predicate, object));
@@ -65,6 +66,9 @@ public class _graph {
 		if (current != null) {
 			graph += current.getCSPARQL() + ". ";
 		}
+		for (String filter : filters) {
+			graph += "FILTER ( " + filter + " ) . ";
+		}
 		return graph;
 	}
 
@@ -83,6 +87,11 @@ public class _graph {
 	public _graph addTransitive(String subject, Property property,
 			Resource object) {
 		return addTransitive(subject, property.toString(), object.toString());
+	}
+
+	public _graph filter(String filter) {
+		filters.add(filter);
+		return this;
 	}
 
 }

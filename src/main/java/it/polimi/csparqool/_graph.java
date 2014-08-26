@@ -58,7 +58,7 @@ public class _graph {
 		for (GraphItem next : graphItems) {
 			if (current != null) {
 				graph += current.getCSPARQL()
-						+ ((next instanceof Triple && ((Triple) next)
+						+ (( !(next instanceof Triple) || ((Triple) next)
 								.hasSubject()) ? ". " : "; ");
 			}
 			current = next;

@@ -40,6 +40,9 @@ public class _body {
 		case Function.AVERAGE:
 			selectItem += "AVG";
 			break;
+		case Function.SUM:
+			selectItem += "SUM";
+			break;
 		case Function.TIMESTAMP:
 			selectItem += "f:timestamp";
 			break;

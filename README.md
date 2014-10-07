@@ -1,6 +1,8 @@
 csparqool
 =========
 
+#Javadoc
+
 Click [here](http://deib-polimi.github.io/csparqool/) to see the Javadoc.
 
 #Installation
@@ -19,18 +21,6 @@ Releases repository:
 </repositories>
 ```
 
-Snapshots repository:
-```xml
-<repositories>
-	...
-	<repository>
-        <id>deib-polimi-snapshots</id>
-        <url>https://github.com/deib-polimi/deib-polimi-mvn-repo/raw/master/snapshots</url>
-	</repository>
-	...
-</repositories>
-```
-
 Dependency:
 ```xml
 <dependencies>
@@ -41,3 +31,9 @@ Dependency:
 	</dependency>
 </dependencies>
 ```
+
+#Change List
+
+v1.2:
+
+* SUM function implemented

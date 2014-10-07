@@ -32,6 +32,7 @@ public class FunctionArgs {
 	static {
 		functionsParameters = new HashMap<String, String[]>();
 		functionsParameters.put(Function.AVERAGE, new String[]{INPUT_VARIABLE});
+		functionsParameters.put(Function.SUM, new String[]{INPUT_VARIABLE});
 		functionsParameters.put(Function.TIMESTAMP, new String[]{SUBJECT,PREDICATE,OBJECT});
 		functionsParameters.put(Function.PERCENTILE, new String[]{INPUT_VARIABLE,TH_PERCENTILE});
 		functionsParameters.put(Function.MAX, new String[]{INPUT_VARIABLE});

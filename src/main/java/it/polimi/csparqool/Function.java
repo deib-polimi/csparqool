@@ -27,5 +27,6 @@ public class Function {
 	public static final String FORECASTING_ML = "ForecastingML";
 	public static final String FORECASTING_TIME_SERIES_AR = "ForecastingTimeSeriesAR";
 	public static final String FORECASTING_TIME_SERIES_ARMA = "ForecastingTimeSeriesARMA";
+	public static final String SUM = "Sum";
 	
 }

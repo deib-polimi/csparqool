@@ -37,6 +37,7 @@ public class FunctionArgs {
 		functionsParameters.put(Function.PERCENTILE, new String[]{INPUT_VARIABLE,TH_PERCENTILE});
 		functionsParameters.put(Function.MAX, new String[]{INPUT_VARIABLE});
 		functionsParameters.put(Function.MIN, new String[]{INPUT_VARIABLE});
+		functionsParameters.put(Function.COUNT, new String[]{INPUT_VARIABLE});
 	}
 
 

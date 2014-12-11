@@ -55,6 +55,9 @@ public class _body {
 		case Function.MIN:
 			selectItem += "MIN";
 			break;
+		case Function.COUNT:
+			selectItem += "COUNT";
+			break;
 		default:
 			throw new MalformedQueryException(
 					"There is no current implementation of aggregation "

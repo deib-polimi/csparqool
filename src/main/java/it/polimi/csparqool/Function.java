@@ -24,9 +24,7 @@ public class Function {
 	public static final String PERCENTILE = "Percentile";
 	public static final String MAX = "Max";
 	public static final String MIN = "Min";
-	public static final String FORECASTING_ML = "ForecastingML";
-	public static final String FORECASTING_TIME_SERIES_AR = "ForecastingTimeSeriesAR";
-	public static final String FORECASTING_TIME_SERIES_ARMA = "ForecastingTimeSeriesARMA";
 	public static final String SUM = "Sum";
+	public static final String COUNT = "Count";
 	
 }

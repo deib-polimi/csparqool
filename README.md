@@ -39,3 +39,6 @@ v1.2.1:
 
 v1.2:
 * SUM function implemented
+
+v1.1:
+* FILTER implemented

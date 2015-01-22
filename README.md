@@ -34,6 +34,8 @@ Dependency:
 
 #Change List
 
-v1.2:
+v1.2.1:
+* COUNT function added
 
+v1.2:
 * SUM function implemented

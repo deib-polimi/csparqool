@@ -27,8 +27,8 @@ public class _body {
 	private _body body;
 	private _graph graph;
 
-	public _body selectFunction(String outputVar, String aggregation, String... parameters)
-			throws MalformedQueryException {
+	public _body selectFunction(String outputVar, String aggregation,
+			String... parameters) throws MalformedQueryException {
 		// TODO parameters should be validated based on aggregation
 		if (!Validator.checkVariable(outputVar))
 			throw new MalformedQueryException("Output variable name '"
@@ -36,39 +36,47 @@ public class _body {
 
 		String selectItem = "(";
 
-		switch (aggregation) {
-		case Function.AVERAGE:
-			selectItem += "AVG";
-			break;
-		case Function.SUM:
-			selectItem += "SUM";
-			break;
-		case Function.TIMESTAMP:
-			selectItem += "f:timestamp";
-			break;
-		case Function.PERCENTILE:
-			selectItem += "PERCENTILE";
-			break;
-		case Function.MAX:
-			selectItem += "MAX";
-			break;
-		case Function.MIN:
-			selectItem += "MIN";
-			break;
-		case Function.COUNT:
-			selectItem += "COUNT";
-			break;
-		default:
-			throw new MalformedQueryException(
-					"There is no current implementation of aggregation "
-							+ aggregation);
+		if (aggregation != null) {
+
+			switch (aggregation) {
+			case Function.AVERAGE:
+				selectItem += "AVG";
+				break;
+			case Function.SUM:
+				selectItem += "SUM";
+				break;
+			case Function.TIMESTAMP:
+				selectItem += "f:timestamp";
+				break;
+			case Function.PERCENTILE:
+				selectItem += "PERCENTILE";
+				break;
+			case Function.MAX:
+				selectItem += "MAX";
+				break;
+			case Function.MIN:
+				selectItem += "MIN";
+				break;
+			case Function.COUNT:
+				selectItem += "COUNT";
+				break;
+			default:
+				throw new MalformedQueryException(
+						"There is no current implementation of aggregation "
+								+ aggregation);
+			}
+			selectItem += "(";
+			int i;
+			for (i = 0; i < parameters.length - 1; i++) {
+				selectItem += parameters[i] + ", ";
+			}
+			selectItem += parameters[i] + ") ";
+		} else {
+			if (parameters==null || parameters.length!=1)
+				throw new MalformedQueryException("Wrong number of parameters");
+			selectItem += parameters[0] + " ";
 		}
-		selectItem += "(";
-		int i;
-		for (i = 0; i < parameters.length - 1; i++) {
-			selectItem += parameters[i] + ", ";
-		}
-		selectItem += parameters[i] + ") AS " + outputVar + ") ";
+		selectItem += "AS " + outputVar + ") ";
 		selectItems.add(selectItem);
 		return this;
 	}
@@ -137,6 +145,5 @@ public class _body {
 
 		return bodyString;
 	}
-
 
 }

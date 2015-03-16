@@ -18,8 +18,8 @@ package it.polimi.csparqool;
 
 public class body {
 
-	public static _body selectFunction(String outputVar, String computation, String... parameters) throws MalformedQueryException {
-		return new _body().selectFunction(outputVar, computation, parameters);
+	public static _body selectFunction(String outputVar, String aggregateFunction, String... parameters) throws MalformedQueryException {
+		return new _body().selectFunction(outputVar, aggregateFunction, parameters);
 	}
 	
 	public static _body select(String... variables) throws MalformedQueryException {

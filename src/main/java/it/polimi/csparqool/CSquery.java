@@ -28,17 +28,17 @@ public class CSquery {
 
 	public static final String BLANK_NODE = "[]";
 
-	private static final String functionsPrefix = "f";
-	private static final String functionsURI = "http://larkc.eu/csparql/sparql/jena/ext#";
+//	private static final String functionsPrefix = "f";
+//	private static final String functionsURI = "http://larkc.eu/csparql/sparql/jena/ext#";
 
 	private String name;
-	private Map<String, String> nameSpaces;
-	private List<_graph> constructGraphs;
-	private List<Stream> streams;
-	private List<String> dataSets;
+	private Map<String, String> nameSpaces = new HashMap<String, String>();
+	private List<_graph> constructGraphs = new ArrayList<_graph>();
+	private List<Stream> streams = new ArrayList<Stream>();
+	private List<String> dataSets = new ArrayList<String>();
 	private _body selectBody;
 	private _graph graph;
-	private List<String> selectItems;
+	private List<String> selectItems = new ArrayList<String>();
 
 	/**
 	 * Query name must contain only numbers and letters
@@ -50,15 +50,25 @@ public class CSquery {
 	public static CSquery createDefaultQuery(String queryName) throws MalformedQueryException {
 		return new CSquery(queryName);
 	}
+	
+	/**
+	 * Query name will be automatically generated
+	 * 
+	 * @param queryName
+	 * @return
+	 * @throws MalformedQueryException
+	 */
+	public static CSquery createDefaultQuery() {
+		return new CSquery();
+	}
 
 	private CSquery(String queryName) throws MalformedQueryException {
 		validateName(queryName);
 		this.name = queryName;
-		nameSpaces = new HashMap<String, String>();
-		streams = new ArrayList<Stream>();
-		dataSets = new ArrayList<String>();
-		selectItems = new ArrayList<String>();
-		constructGraphs = new ArrayList<_graph>();
+	}
+	
+	private CSquery() {
+		this.name = generateRandomName();
 	}
 
 	public CSquery setNsPrefix(String prefix, String uri) {
@@ -167,14 +177,31 @@ public class CSquery {
 		return escapeName(UUID.randomUUID().toString());
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CSquery other = (CSquery) obj;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
+	}
+
 	
-
-	public static String getFunctionsPrefix() {
-		return functionsPrefix ;
-	}
-
-	public static String getFunctionsURI() {
-		return functionsURI;
-	}
 
 }

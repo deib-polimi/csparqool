@@ -21,7 +21,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.polimi.csparqool</groupId>
 	<artifactId>csparqool</artifactId>
-	<version>1.2.1</version>
+	<version>1.2.2</version>
 	<name>csparqool</name>
 	<description>An object oriented language for c-sparql queries</description>
 	<inceptionYear>2014</inceptionYear>
@@ -144,7 +144,7 @@
 			<plugin>
 				<groupId>com.github.github</groupId>
 				<artifactId>site-maven-plugin</artifactId>
-				<version>0.10</version>
+				<version>0.11</version>
 				<configuration>
 					<merge>true</merge> <!-- deploy without removing existing artifacts on the repo -->
 					<message>Maven artifacts for ${project.artifactId}
@@ -194,7 +194,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-scm-publish-plugin</artifactId>
-				<version>1.0-beta-2</version>
+				<version>1.1</version>
 				<configuration>
 					<checkoutDirectory>${project.build.directory}/scmpublish</checkoutDirectory>
 					<checkinComment>Publishing javadoc for

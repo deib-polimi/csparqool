@@ -33,11 +33,25 @@ class Triple extends GraphItem {
 		this.isTransitive = value;
 	}
 
-	
 	private String escape(String term) {
 		if (isIriRef(term))
 			return "<" + term + ">";
+		if (isLiteral(term))
+			return "\"" + term + "\"";
 		return term;
+	}
+
+	private boolean isLiteral(String term) {
+		return !isIriRef(term) && !isPrefixedIri(term)
+				&& !isVariable(term) && !term.contains("[");
+	}
+
+	private boolean isVariable(String term) {
+		return term.startsWith("?");
+	}
+
+	private boolean isPrefixedIri(String term) {
+		return term.contains(":") && !term.contains("/");
 	}
 
 	private boolean isIriRef(String term) {
@@ -46,10 +60,12 @@ class Triple extends GraphItem {
 
 	@Override
 	public String getCSPARQL() throws MalformedQueryException {
-		return (subject != null ? escape(subject) + " " : "") + escape(predicate) + (isTransitive ? "+ " : " ") + escape(object) + " ";
+		return (subject != null ? escape(subject) + " " : "")
+				+ escape(predicate) + (isTransitive ? "+ " : " ")
+				+ escape(object) + " ";
 	}
 
 	public boolean hasSubject() {
-		return subject!=null;
+		return subject != null;
 	}
 }

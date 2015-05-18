@@ -28,11 +28,15 @@ public class graph {
 
 	public static _graph add(String subject, Property predicate,
 			Resource object) {
-		return add(subject, predicate.toString(), object.toString());
+		return add(subject, predicate.getURI(), object.toString());
 	}
 
 	public static _graph add(String subject, Property predicate,
 			String object) {
-		return add(subject, predicate.toString(), object);
+		return add(subject, predicate.getURI(), object);
+	}
+
+	public static _graph add(_union union) {
+		return new _graph().add(union);
 	}
 }

@@ -49,7 +49,7 @@ public class _graph {
 	}
 
 	public _graph add(Property predicate, String object) {
-		return add(predicate.toString(), object);
+		return add(predicate.getURI(), object);
 	}
 
 	public String getCSPARQL() throws MalformedQueryException {
@@ -58,7 +58,7 @@ public class _graph {
 		for (GraphItem next : graphItems) {
 			if (current != null) {
 				graph += current.getCSPARQL()
-						+ (( !(next instanceof Triple) || ((Triple) next)
+						+ ((!(next instanceof Triple) || ((Triple) next)
 								.hasSubject()) ? ". " : "; ");
 			}
 			current = next;
@@ -73,24 +73,29 @@ public class _graph {
 	}
 
 	public _graph add(String subject, Property property, String object) {
-		return add(subject, property.toString(), object);
+		return add(subject, property.getURI(), object);
 	}
 
 	public _graph add(String subject, Property property, Resource object) {
-		return add(subject, property.toString(), object.toString());
+		return add(subject, property.getURI(), object.getURI());
 	}
 
 	public _graph addTransitive(String subject, Property property, String object) {
-		return addTransitive(subject, property.toString(), object);
+		return addTransitive(subject, property.getURI(), object);
 	}
 
 	public _graph addTransitive(String subject, Property property,
 			Resource object) {
-		return addTransitive(subject, property.toString(), object.toString());
+		return addTransitive(subject, property.getURI(), object.getURI());
 	}
 
 	public _graph filter(String filter) {
 		filters.add(filter);
+		return this;
+	}
+
+	public _graph add(_body body) {
+		graphItems.add(body);
 		return this;
 	}
 

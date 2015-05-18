@@ -30,12 +30,12 @@ public class _union extends GraphItem {
 
 	@Override
 	public String getCSPARQL() throws MalformedQueryException {
-		String union = "{ ";
+		String union = "";
 		int elements = graphs.size();
 		for (_graph g : graphs) {
-			union += "{ " + g.getCSPARQL() + "} ";
+			union += "{ " + g.getCSPARQL();
 			if (--elements > 0)
-				union += "UNION ";				
+				union += "} UNION ";				
 		}
 		union += "} ";
 		return union;

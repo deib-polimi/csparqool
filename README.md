@@ -34,6 +34,9 @@ Dependency:
 
 #Change List
 
+v1.3:
+* bug fixes and refactoring
+
 v1.2.2:
 * selectFunctions can now be used for reassigning variables (e.g.: ?var1 AS ?var2) using `null` as aggregateFunction 
 * minor bug fix

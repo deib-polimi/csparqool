@@ -19,7 +19,7 @@ package it.polimi.csparqool;
 import java.util.ArrayList;
 import java.util.List;
 
-public class _body {
+public class _body extends GraphItem {
 
 	private List<String> selectItems = new ArrayList<String>();
 	private String groupByVar;
@@ -72,7 +72,7 @@ public class _body {
 			}
 			selectItem += parameters[i] + ") ";
 		} else {
-			if (parameters==null || parameters.length!=1)
+			if (parameters == null || parameters.length != 1)
 				throw new MalformedQueryException("Wrong number of parameters");
 			selectItem += parameters[0] + " ";
 		}
@@ -118,7 +118,7 @@ public class _body {
 	}
 
 	public String getCSPARQL() throws MalformedQueryException {
-		String bodyString = "";
+		String bodyString = "{ ";
 
 		if (selectItems.isEmpty())
 			throw new MalformedQueryException("No selection is specified");
@@ -127,13 +127,14 @@ public class _body {
 		for (String selectItem : selectItems) {
 			bodyString += selectItem + " ";
 		}
+		bodyString += "\n";
 
 		if (body == null && graph == null)
 			throw new MalformedQueryException("Body of WHERE is missing");
 
 		bodyString += "WHERE { "
 				+ (body != null ? body.getCSPARQL() : graph.getCSPARQL())
-				+ "} ";
+				+ "} \n";
 
 		if (groupByVar != null) {
 			bodyString += "GROUP BY " + groupByVar + " ";
@@ -143,7 +144,7 @@ public class _body {
 			bodyString += "HAVING (" + condition + ") ";
 		}
 
-		return bodyString;
+		return bodyString + "} ";
 	}
 
 }

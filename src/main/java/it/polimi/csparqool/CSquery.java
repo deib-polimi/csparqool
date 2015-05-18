@@ -23,13 +23,14 @@ import java.util.Map;
 import java.util.UUID;
 
 public class CSquery {
-	
+
 	// sparql grammar: http://www.w3.org/TR/2013/REC-sparql11-query-20130321
 
 	public static final String BLANK_NODE = "[]";
 
-//	private static final String functionsPrefix = "f";
-//	private static final String functionsURI = "http://larkc.eu/csparql/sparql/jena/ext#";
+	// private static final String functionsPrefix = "f";
+	// private static final String functionsURI =
+	// "http://larkc.eu/csparql/sparql/jena/ext#";
 
 	private String name;
 	private Map<String, String> nameSpaces = new HashMap<String, String>();
@@ -47,10 +48,11 @@ public class CSquery {
 	 * @return
 	 * @throws MalformedQueryException
 	 */
-	public static CSquery createDefaultQuery(String queryName) throws MalformedQueryException {
+	public static CSquery createDefaultQuery(String queryName)
+			throws MalformedQueryException {
 		return new CSquery(queryName);
 	}
-	
+
 	/**
 	 * Query name will be automatically generated
 	 * 
@@ -66,7 +68,7 @@ public class CSquery {
 		validateName(queryName);
 		this.name = queryName;
 	}
-	
+
 	private CSquery() {
 		this.name = generateRandomName();
 	}
@@ -80,9 +82,9 @@ public class CSquery {
 		constructGraphs.add(constructGraph);
 		return this;
 	}
-	
+
 	public CSquery select(String... variables) {
-		for (String var: variables)
+		for (String var : variables)
 			selectItems.add(var);
 		return this;
 	}
@@ -101,34 +103,35 @@ public class CSquery {
 		this.selectBody = select;
 		return this;
 	}
-	
+
 	public CSquery where(_graph graph) {
 		this.graph = graph;
 		return this;
 	}
-	
+
 	public String getCSPARQL() throws MalformedQueryException {
 		String query = "";
-		
-		boolean isConstructQuery = constructGraphs != null && ! constructGraphs.isEmpty();
-		
+
+		boolean isConstructQuery = constructGraphs != null
+				&& !constructGraphs.isEmpty();
+
 		if (isConstructQuery)
-			query += "REGISTER STREAM " + name + " AS ";
+			query += "REGISTER STREAM " + name + " AS \n";
 		else
-			query += "REGISTER QUERY " + name + " AS ";
+			query += "REGISTER QUERY " + name + " AS \n";
 
 		if (!nameSpaces.isEmpty()) {
 			for (String uri : nameSpaces.keySet()) {
-				query += "PREFIX " + nameSpaces.get(uri) + ": <" + uri + "> ";
+				query += "PREFIX " + nameSpaces.get(uri) + ": <" + uri + "> \n";
 			}
 		}
 
 		if (isConstructQuery) {
 			query += "CONSTRUCT { ";
-			for (_graph constructGraph: constructGraphs) {
+			for (_graph constructGraph : constructGraphs) {
 				query += constructGraph.getCSPARQL();
 			}
-			query += "} ";
+			query += "} \n";
 		} else {
 			query += "SELECT ";
 			for (String selectItem : selectItems) {
@@ -140,30 +143,30 @@ public class CSquery {
 			for (Stream stream : streams) {
 				query += "FROM STREAM <" + stream.getURI() + "> [RANGE "
 						+ stream.getRange() + " STEP " + stream.getStep()
-						+ "] ";
+						+ "] \n";
 			}
 		}
 
 		if (!dataSets.isEmpty()) {
 			for (String dataSet : dataSets) {
-				query += "FROM <" + dataSet + "> ";
+				query += "FROM <" + dataSet + "> \n";
 			}
 		}
 
 		if (selectBody != null) {
-			query += "WHERE { { " + selectBody.getCSPARQL() + " } } ";
+			query += "WHERE { " + selectBody.getCSPARQL() + "} \n";
 		} else if (graph != null) {
-			query += "WHERE { { " + graph.getCSPARQL() + "} } ";
+			query += "WHERE { " + graph.getCSPARQL() + "} \n";
 		}
 
 		return query;
 	}
 
-
 	public static void validateName(String name) throws MalformedQueryException {
-		if (!name.matches("[a-zA-Z0-9]+")) throw new MalformedQueryException("Query name must contain only letters and numbers");
+		if (!name.matches("[a-zA-Z0-9]+"))
+			throw new MalformedQueryException(
+					"Query name must contain only letters and numbers");
 	}
-
 
 	public String getName() {
 		return this.name;
@@ -201,7 +204,5 @@ public class CSquery {
 			return false;
 		return true;
 	}
-
-	
 
 }
